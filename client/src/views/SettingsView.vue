@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useSettingsStore } from '../stores/settings'
+import ThemeToggle from '@/components/ThemeToggle.vue'
 import { useRouter } from 'vue-router'
 
 const store = useSettingsStore()
@@ -84,6 +85,12 @@ const saveSettings = async () => {
             <span class="material-symbols-outlined">error</span>
             Failed to save settings. Please check your connection.
           </div>
+        </div>
+
+        <div class="theme-section">
+          <h2 class="subtitle">Theme</h2>
+          <p class="description">Switch between light and dark mode.</p>
+          <ThemeToggle />
         </div>
       </div>
     </md-elevated-card>

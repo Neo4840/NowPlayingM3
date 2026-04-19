@@ -17,6 +17,23 @@ app.use(express.json())
 // Last.fm API configuration
 const LASTFM_API_BASE = 'https://ws.audioscrobbler.com/2.0/'
 
+// Last.fm API error codes
+const LASTFM_ERRORS: Record<number, string> = {
+  2: 'Invalid service - This service does not exist',
+  3: 'Invalid Method - No method with that name in this package',
+  4: 'Authentication Failed - You do not have permissions to access the service',
+  5: 'Invalid format - This service doesn\'t exist in that format',
+  6: 'Invalid parameters - Your request is missing a required parameter',
+  7: 'Invalid resource specified',
+  8: 'Operation failed - Something else went wrong',
+  9: 'Invalid session key - Please re-authenticate',
+  10: 'Invalid API key - You must be granted a valid key by last.fm',
+  11: 'Service Offline - This service is temporarily offline. Try again later.',
+  13: 'Invalid method signature supplied',
+  16: 'There was a temporary error processing your request. Please try again',
+  26: 'Suspended API key - Access for your account has been suspended, please contact Last.fm',
+  29: 'Rate limit exceeded - Your IP has made too many requests in a short period',
+};
 // Persistent storage for user settings
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const SETTINGS_FILE = path.join(__dirname, 'settings.json')
@@ -111,7 +128,26 @@ app.get('/api/now-playing', async (req, res) => {
         format: 'json',
         limit: 1,
       },
+      timeout: 10000,
     })
+
+    // Check for Last.fm API error
+    if (response.data.error) {
+      const errorCode = response.data.error;
+      const errorMessage = response.data.message || LASTFM_ERRORS[errorCode] || 'Unknown Last.fm error';
+      console.error(`Last.fm API error ${errorCode}: ${errorMessage}`);
+      // Special handling for suspended API key
+      if (errorCode === 26) {
+        return res.status(403).json({
+          error: 'API key suspended. Please update your Last.fm API key in settings.',
+          errorCode,
+        });
+      }
+      return res.status(400).json({
+        error: errorMessage,
+        errorCode,
+      });
+    }
 
     const recentTracks = response.data.recenttracks?.track
     if (!recentTracks || recentTracks.length === 0) {
@@ -145,8 +181,43 @@ app.get('/api/now-playing', async (req, res) => {
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() })
+  const { apiKey, username } = userSettings;
+  const lastfmConfigured = !!(apiKey && username);
+  const settingsFileExists = fs.existsSync(SETTINGS_FILE);
+
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    lastfm: {
+      configured: lastfmConfigured,
+      hasApiKey: !!apiKey,
+      hasUsername: !!username,
+    },
+    settings: {
+      fileExists: settingsFileExists,
+      path: SETTINGS_FILE,
+    },
+    server: {
+      port: PORT,
+      uptime: process.uptime(),
+    },
+  });
 })
+
+// Global error handling middleware
+app.use((err: any, req: any, res: any, next: any) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
+// Uncaught exception and rejection handlers
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)

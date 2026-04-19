@@ -10,8 +10,23 @@
   --md-sys-color-outline: #79747E;
   --md-sys-color-error-container: #F9DEDC;
   --md-sys-color-on-error-container: #410E0B;
+  color-scheme: light;
 }
 
+/* Dark theme variables */
+:root[data-theme="dark"] {
+  --md-sys-color-primary: #66CCCC;
+  --md-sys-color-surface: #1C1B1F;
+  --md-sys-color-on-surface: #E6E1E5;
+  --md-sys-color-surface-container: #262429;
+  --md-sys-color-on-surface-variant: #CAC4D0;
+  --md-sys-color-primary-container: #004F4F;
+  --md-sys-color-on-primary-container: #FFFFFF;
+  --md-sys-color-outline: #938F99;
+  --md-sys-color-error-container: #8C1D18;
+  --md-sys-color-on-error-container: #FFFFFF;
+  color-scheme: dark;
+}
 body {
   margin: 0;
   font-family: 'Roboto', sans-serif;

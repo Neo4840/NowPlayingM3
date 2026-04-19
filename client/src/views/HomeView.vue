@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useNowPlayingStore } from '../stores/nowPlaying'
+import { useSettingsStore } from '../stores/settings'
 import NowPlayingCard from '../components/NowPlayingCard.vue'
 
 const store = useNowPlayingStore()
+const settingsStore = useSettingsStore()
 const loading = ref(false)
 const error = ref<string | null>(null)
 const refreshIntervalId = ref<number | null>(null)
-const REFRESH_INTERVAL_MS = 7000 // 7 seconds
+const REFRESH_INTERVAL_MS = 15000 // 15 seconds
+
+const hasConfiguration = computed(() => {
+  return !!settingsStore.apiKey && !!settingsStore.username
+})
 
 const fetchNowPlaying = async (isAutoRefresh = false) => {
   console.log('fetchNowPlaying called', { isAutoRefresh, loading: loading.value })
@@ -36,6 +42,10 @@ const fetchNowPlaying = async (isAutoRefresh = false) => {
 }
 
 const startPolling = () => {
+  if (!hasConfiguration.value) {
+    console.log('Skipping polling due to missing configuration')
+    return
+  }
   if (refreshIntervalId.value) {
     window.clearInterval(refreshIntervalId.value)
   }
@@ -50,8 +60,12 @@ const stopPolling = () => {
 }
 
 onMounted(() => {
-  fetchNowPlaying()
-  startPolling()
+  if (hasConfiguration.value) {
+    fetchNowPlaying()
+    startPolling()
+  } else {
+    error.value = 'API key or username not configured. Please go to Settings to configure.'
+  }
 })
 
 onUnmounted(() => {
