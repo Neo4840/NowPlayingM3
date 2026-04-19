@@ -1,0 +1,72 @@
+/* Global styles */
+:root {
+  --md-sys-color-primary: #66CCCC;
+  --md-sys-color-surface: #FFFFFF;
+  --md-sys-color-on-surface: #1C1B1F;
+  --md-sys-color-surface-container: #F0F8F8;
+  --md-sys-color-on-surface-variant: #49454F;
+  --md-sys-color-primary-container: #4DB8B8;
+  --md-sys-color-on-primary-container: #000000;
+  --md-sys-color-outline: #79747E;
+  --md-sys-color-error-container: #F9DEDC;
+  --md-sys-color-on-error-container: #410E0B;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+}
+
+/* Material Web Components customizations */
+md-elevated-card {
+  --md-elevated-card-container-color: var(--md-sys-color-surface);
+  border-radius: 24px;
+  --md-elevation-level: 3;
+  margin-bottom: 24px;
+  transition: box-shadow 0.3s ease;
+}
+
+md-elevated-card:hover {
+  --md-elevation-level: 5;
+}
+
+md-filled-card, md-outlined-card {
+  border-radius: 24px;
+  margin-bottom: 24px;
+}
+
+md-filled-text-field, md-outlined-text-field {
+  --md-filled-text-field-container-color: var(--md-sys-color-surface-container);
+  --md-outlined-text-field-outline-color: var(--md-sys-color-outline);
+  border-radius: 12px;
+}
+
+md-filled-button, md-text-button, md-filled-tonal-button {
+  border-radius: 20px;
+}
+
+/* Utility classes */
+.flex {
+  display: flex;
+}
+.gap-1 {
+  gap: 4px;
+}
+.gap-2 {
+  gap: 8px;
+}
+.gap-3 {
+  gap: 12px;
+}
+.gap-4 {
+  gap: 16px;
+}
+
+/* Ensure Material text fields are visible */
+md-filled-text-field, md-outlined-text-field {
+  width: 100%;
+  --md-filled-text-field-container-color: var(--md-sys-color-surface-container);
+  --md-outlined-text-field-outline-color: var(--md-sys-color-outline);
+}
