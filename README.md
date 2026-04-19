@@ -2,6 +2,8 @@
 
 基于 Vue 3 + Node.js + Material Design Web Components 的网页应用，用于显示 Last.fm 用户正在播放的歌曲。
 
+这个只是作为一个网页端组件来做的小项目，可以将它改造用在各种各样的地方。
+
 ![](sample.png)
 
 ## 功能特性
