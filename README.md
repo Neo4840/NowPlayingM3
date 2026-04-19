@@ -2,6 +2,8 @@
 
 基于 Vue 3 + Node.js + Material Design Web Components 的网页应用，用于显示 Last.fm 用户正在播放的歌曲。
 
+![](sample.png)
+
 ## 功能特性
 
 - 显示当前正在播放的歌曲（专辑封面、歌曲名、艺术家、专辑）
