@@ -1,10 +1,9 @@
 # 依赖
 node_modules/
-package-lock.json   # 如果你想保留 lockfile 可以去掉这行，但建议上传
+package-lock.json
 yarn.lock
 
 # 构建产物
-dist/
 build/
 *.log
 
